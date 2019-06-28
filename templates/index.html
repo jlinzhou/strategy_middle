@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/public/js/jquery-1.12.4.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/public/css/indexcss.css">
+    <!--//<script src="/public/js/mygin.js"></script>-->
+    <script type="text/javascript">
+        //存储策略列表
+        var strategylist=[];
+
+        url = 'ws://localhost:'+{{ .PORT }}+'/ping';
+        strategy_op = new WebSocket(url);
+
+        send = function(data){
+            var message = {
+                 time: new Date(),
+                 text: "Hello world!",
+                 clientId: "asdfp8734rew"
+            };
+        console.log((new Date())+ " ==> "+data);
+        strategy_op.send(JSON.stringify(message))
+       };
+
+        strategy_op.onmessage = function(msg){
+        //$("#output").append((new Date())+ " <== "+msg.data+"\n")
+
+            var data_json=JSON.parse(msg.data);
+
+            for(var i=0;i<strategylist.length;i++)
+            {
+                if(strategylist[i]["strategy_name"]== data_json["strategy_name"])
+                {
+
+                    strategylist[i]["update_time"]=data_json["update_time"];
+                    strategylist[i]["strategy_status"]=data_json["strategy_status"];
+                    console.log( strategylist[i]);
+                    break;
+                    //strategylist[i]["update_time"]=data_json["update_time"]
+                }
+            }
+        };
+
+        strategy_op.onopen = function(){
+           setInterval(
+           function(){ send("ping") }
+           , 1000 )
+        };
+        function f1() {
+
+
+            console.log("-------------------------策略信息表-------------------------");
+            for(var i=0;i<strategylist.length;i++)
+            {
+                 console.log(strategylist[i]);
+            }
+            console.log("------------------------------------------------------------");
+        }
+        function f2(strategy_name,op,account) {
+            strategy_op.send(JSON.stringify({strategy_name:strategy_name,op:op,account:account}))
+        }
+        function init()
+        {
+
+            console.log("-------------------------操作指令-------------------------");
+            console.log("获取策略信息表: f1()");
+            console.log("操作指令: f2(\"止损算法\",\"start\",\"jlzhou\")");
+            console.log("----------------------------------------------------------");
+            // var strategydata= {{ .strategydata }};
+
+            // for(var i=0;i<strategydata.Value.length;i++)
+            // {
+            //     strategylist.push(strategydata.Value[i]);
+            // }
+
+        }
+
+        $(function () {
+            init();
+
+        })
+    </script>
+
+</head>
+<body>
+<h3>WebSocket Go</h3>
+    <pre id="output"></pre>
+
+</body>
+</html>
