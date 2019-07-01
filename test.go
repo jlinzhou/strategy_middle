@@ -1,18 +1,18 @@
-package main
+// package main
+ 
+// import "github.com/wonderivan/logger"
+ 
+// func main() {
 
-import (
-	"fmt"
-	"log"
-	"strategy_middle/models"
-)
-
-func main() {
-	c := models.ConnecToDB("student2")
-
-	students := make([]models.Student, 20)
-	err := c.Find(nil).All(&students)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(students[0])
-}
+// 	logger.SetLogger(`{"Console": {"level": "DEBG"}}`)
+//     // 通过配置文件配置
+//     logger.SetLogger("logging/log.json")
+// 	logger.Trace("this is Trace") // 由于默认输出，只会在控制台输出Debug及其以上日志，所以该条不会输出
+// 	logger.Debug("this is Debug")
+// 	logger.Info("this is Info")
+// 	logger.Warn("this is Warn")
+// 	logger.Error("this is Error")
+// 	logger.Crit("this is Critical")
+// 	logger.Alert("this is Alert")
+// 	logger.Emer("this is Emergency")
+// }

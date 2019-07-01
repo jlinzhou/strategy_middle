@@ -1,18 +1,20 @@
 package rabbitmq
 
 import (
-	"log"
 	"strategy_middle/setting"
 	"fmt"
 
 	"github.com/gorilla/websocket"
 	"github.com/streadway/amqp"
+	"strategy_middle/logging"
 )
 var Allws []*websocket.Conn
 
+
 func failOnError(err error, msg string) {
 	if err != nil {
-		log.Fatalf("%s: %s", msg, err)
+		logging.Fatal(err)
+		//log.Fatalf("%s: %s", msg, err)
 	}
 }
 
@@ -51,7 +53,9 @@ func Send(sendchanneL_name string, msg string) {
 			ContentType: "text/plain",
 			Body:        []byte(body),
 		})
-	log.Printf(" [x] Sent %s", body)
+	//log.Printf(" [x] Sent %s", body)
+	logging.Info(" [x] Sent ", body)
+	//logger.Info(" [x] Sent %s", body)
 	failOnError(err, "rabbitmq:Failed to publish a message")
 }
 
@@ -92,20 +96,30 @@ func Recv(sendchanneL_name string) {
 
 	go func() {
 		for d := range msgs {
-			log.Printf("rabbitmq:Received a message: %s", d.Body)
-			for e := range Allws{
-
-				fmt.Println(e)
-				if len(Allws)>0{
-					err = e.WriteMessage('', []byte(d.Body))
-					if err!=nil{
-						fmt.Println(err)
-					}
+			logging.Info("rabbitmq:Received a message: ", string(d.Body))
+			//log.Printf("rabbitmq:Received a message: %s", d.Body)
+			//fmt.Println("allws:",Allws)
+			for _,e:= range Allws{
+				// if len(Allws)>0{
+				err = e.WriteMessage(1, []byte(d.Body))
+				if err!=nil{
+					logging.Error(err)
+					//fmt.Println("err",err)
 				}
+				// }
+				//fmt.Println("11111111111111",e)
+				//fmt.Println(Allws)
+				// if len(Allws)>0{
+				// 	err = e.WriteMessage('', []byte(d.Body))
+				// 	if err!=nil{
+				// 		fmt.Println(err)
+				// 	}
+				// }
 
-			}
+			 }
 		}
 	}()
-	log.Printf(" rabbitmq:[*] Waiting for messages. ")
+	logging.Info(" rabbitmq:[*] Waiting for messages. ")
+	//log.Printf(" rabbitmq:[*] Waiting for messages. ")
 	<-forever
 }

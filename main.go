@@ -7,6 +7,9 @@ import (
 	//"strategy_middle/models"
 	"strategy_middle/route"
 	"strategy_middle/setting"
+	"strategy_middle/rabbitmq"
+	//"strategy_middle/logging"
+
 	//"time"
 )
 
@@ -22,6 +25,8 @@ import (
 // 		time.Sleep(time.Second)
 // 	}
 // }
+
+
 func main() {
 	//go rabbitmq.Recv()
 
@@ -39,6 +44,10 @@ func main() {
 	// 	log.Fatal(err)
 	// }
 	// fmt.Println(students)
+
+	go rabbitmq.Recv("test1")
+
+
 	router := route.InitRouter()
 
 	s := &http.Server{
@@ -49,6 +58,6 @@ func main() {
 		MaxHeaderBytes: 1 << 20,                              //请求头的最大字节数
 	}
 	s.ListenAndServe()
-	rabbitmq.Recv("test1")
+	
 
 }

@@ -5,9 +5,14 @@ import (
 	"github.com/go-ini/ini"
 	"log"
 	"time"
+
+	
+
 )
 
 var (
+
+	//Allws []*websocket.Conn
 	//定义*ini.File类型的Cfg
 	Cfg *ini.File
 	//运行模式
@@ -29,14 +34,24 @@ var (
 	Rabbitmq_USER string
 	Rabbitmq_PASSWORD string
 	Rabbitmq_HOST string
+
+	//静态文件目录
+	Static_file string
 )
 
 func init() {
 	var err error
-	Cfg, err = ini.Load("conf/app.ini")
+	Cfg, err = ini.Load("setting/app.ini")
 	if err != nil {
 		log.Fatalf("Fail to parse 'conf/app.ini': %v", err)
 	}
+
+	sec, err := Cfg.GetSection("static")
+	if err != nil {
+		log.Fatalf("Fail to get section 'server': %v", err)
+	}
+
+	Static_file = sec.Key("STATIC_FILE").MustString("")
 
 	LoadBase()
 	LoadServer()
@@ -49,6 +64,7 @@ func init() {
 //加载运行模式
 func LoadBase() {
 	RunMode = Cfg.Section("").Key("RUN_MODE").MustString("debug")
+
 }
 
 func LoadServer() {
@@ -71,10 +87,10 @@ func LoadDatabase() {
 		log.Fatalf("Fail to get section 'server': %v", err)
 	}
 
-	Mongodb_USER = sec.Key("USER").MustString("jlzhou")
-	Mongodb_PASSWORD = sec.Key("PASSWORD").MustString("jlzhou")
-	Mongodb_HOST = sec.Key("HOST").MustString("192.168.18.16:27017")
-	Mongodb_DATABASE = sec.Key("DATABASE").MustString("test")
+	Mongodb_USER = sec.Key("USER").MustString("")
+	Mongodb_PASSWORD = sec.Key("PASSWORD").MustString("")
+	Mongodb_HOST = sec.Key("HOST").MustString("")
+	Mongodb_DATABASE = sec.Key("DATABASE").MustString("")
 
 }
 func LoadRabbitmq() {
@@ -82,13 +98,11 @@ func LoadRabbitmq() {
 	if err != nil {
 		log.Fatalf("Fail to get section 'server': %v", err)
 	}
-
-	Rabbitmq_USER = sec.Key("USER").MustString("dev")
-	Rabbitmq_PASSWORD = sec.Key("PASSWORD").MustString("dev")
-	Rabbitmq_HOST = sec.Key("HOST").MustString("192.168.18.24:5672")
-
-
+	Rabbitmq_USER = sec.Key("USER").MustString("")
+	Rabbitmq_PASSWORD = sec.Key("PASSWORD").MustString("")
+	Rabbitmq_HOST = sec.Key("HOST").MustString("")
 }
+
 // func LoadApp() {
 // 	sec, err := Cfg.GetSection("app")
 // 	if err != nil {

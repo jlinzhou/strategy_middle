@@ -1,13 +1,14 @@
 package models
 
 import (
-	"fmt"
+	//"fmt"
 	"net/http"
 	//"reflect"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
+	"strategy_middle/setting"
 )
 
 var DB *gorm.DB
@@ -28,8 +29,10 @@ func Login(c *gin.Context) {
 	//passwd := c.Request.FormValue("Passwd")
 	name := c.PostForm("Name")
 	password := c.PostForm("Passwd")
-	fmt.Println(name)
-	fmt.Println(password)
+	//fmt.Println(name)
+	//fmt.Println(password)
+	logging.Info(name)
+	logging.Info(password)
 	//用于临时存储用户登录信息的Map
 	var State = make(map[string]interface{})
 	var user []User
@@ -91,7 +94,7 @@ func GetPerson(c *gin.Context) {
 	var person Person
 	if err := DB.Where("id = ?", id).First(&person).Error; err != nil {
 		c.AbortWithStatus(404)
-		fmt.Println(err)
+		logging.Error(err)
 	} else {
 		c.JSON(200, person)
 	}
@@ -109,7 +112,9 @@ func UpdatePerson(c *gin.Context) {
 	id := c.Params.ByName("id")
 	if err := DB.Where("id = ?", id).First(&person).Error; err != nil {
 		c.AbortWithStatus(404)
-		fmt.Println(err)
+		logging.Error(err)
+		//fmt.Println(err)
+		
 	}
 	c.BindJSON(&person)
 	DB.Save(&person)
@@ -120,6 +125,6 @@ func DeletePerson(c *gin.Context) {
 	id := c.Params.ByName("id")
 	var person Person
 	d := DB.Where("id = ?", id).Delete(&person)
-	fmt.Println(d)
+	logging.Info(d)
 	c.JSON(200, gin.H{"id #" + id: "deleted"})
 }

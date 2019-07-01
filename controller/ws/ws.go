@@ -1,11 +1,12 @@
 package ws
 
 import (
-	"fmt"
 	"net/http"
 	"runtime"
+	"strategy_middle/logging"
 	//"strategy_middle/models"
 	"strategy_middle/rabbitmq"
+
 	//"time"
 	//"Goroutine"
 	//"os"
@@ -52,10 +53,10 @@ func Ping(c *gin.Context) {
 		return
 	}
 
-	fmt.Printf("%T", ws)
 
 
 	rabbitmq.Allws =append(rabbitmq.Allws,ws)
+	//fmt.Println("rabbitmq.Allws:",rabbitmq.Allws)
 	defer ws.Close()
 	
 	for {
@@ -63,18 +64,19 @@ func Ping(c *gin.Context) {
 		mt, message, err := ws.ReadMessage()
 		if err != nil {
 			// 客户端关闭连接时也会进入
-			fmt.Println(err)
-			fmt.Println(mt)
+			logging.Error(err,mt)
 			break
 		}
-		fmt.Println(mt)
+		// fmt.Printf("mt : %T", mt)
+		// fmt.Println("mt=",mt)
 		//发送到rabbitmq
 		rabbitmq.Send("test1", string(message))
 
 		msg := &Recvdata{}
 		json.Unmarshal(message, msg)
-		fmt.Println(msg)
-		fmt.Println(msg.Strategy_name)
+
+		logging.Info(msg)
+		logging.Info(msg.Strategy_name)
 		//fmt.Println(msg)
 		//fmt.Println(mt)
 		//fmt.Println(message)

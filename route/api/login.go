@@ -1,9 +1,10 @@
 package api
 
 import (
-	"fmt"
+	//"fmt"
 	"github.com/gin-gonic/gin"
 	"strategy_middle/setting"
+	"strategy_middle/logging"
 	//"strategy_middle/models"
 )
 
@@ -12,8 +13,10 @@ func Login(c *gin.Context) {
 	//passwd := c.Request.FormValue("Passwd")
 	name := c.PostForm("Name")
 	password := c.PostForm("Passwd")
-	fmt.Println(name)
-	fmt.Println(password)
+	logging.Info(name)
+	logging.Info(password)
+	//fmt.Println(name)
+	//fmt.Println(password)
 
 	c.HTML(200, "index.html", gin.H{
 		"PORT":         setting.HTTPPort,

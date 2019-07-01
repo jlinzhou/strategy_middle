@@ -10,6 +10,7 @@ import (
 	//"runtime"
 
 	"github.com/gin-gonic/gin"
+
 	//_ "github.com/go-sql-driver/mysql"
 	//"github.com/jinzhu/gorm"
 )
@@ -68,7 +69,8 @@ func InitRouter() *gin.Engine {
 	r.LoadHTMLGlob("templates/*")
 
 	// 静态资源加载，本例为css,js以及资源图片
-	r.StaticFS("/public", http.Dir("D:/go/go_demo/src/strategy_middle/static"))
+
+	r.StaticFS("/public", http.Dir(setting.Static_file))
 
 	r.StaticFile("/favicon.ico", "./resources/favicon.ico")
 

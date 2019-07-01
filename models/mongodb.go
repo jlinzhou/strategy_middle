@@ -2,11 +2,12 @@ package models
 
 import (
 	"encoding/json"
-	"fmt"
+	//"fmt"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"log"
 	"strategy_middle/setting"
+	"strategy_middle/logging"
 	"time"
 )
 
@@ -17,13 +18,15 @@ func Setdata() {
 
 	jsonauth, _ := json.Marshal(auth)
 	jsonstrategy, _ := json.Marshal(strategy)
-	fmt.Println(string(jsonauth))
-	fmt.Println(string(jsonstrategy))
+
+
+	logging.Info((string(jsonauth))
+	logging.Info(string(jsonstrategy))
 
 	c := ConnecToDB("student2")
 	err := c.Insert(auth, strategy)
 	if err != nil {
-		log.Fatal(err)
+		logging.Error(err)
 	}
 
 }
@@ -45,6 +48,7 @@ func ConnecToDB(table string) *mgo.Collection {
 	//session, err := mgo.Dial("192.168.18.16:27017")
 	if err != nil {
 		panic(err)
+		logging.Error(err)
 	}
 	//defer session.Close()
 	//session设置的模式分别为:
@@ -79,7 +83,8 @@ func InsertToMogo() {
 	}
 	err := c.Insert(&stu1, &stu2)
 	if err != nil {
-		log.Fatal(err)
+
+		logging.Fatal(err)
 	}
 }
 
@@ -95,9 +100,11 @@ func GetDataViaSex() {
 	students := make([]Student, 20)
 	err := c.Find(nil).All(&students)
 	if err != nil {
-		log.Fatal(err)
+
+		logging.Fatal(err)
 	}
-	fmt.Println(students)
+	logging.Info(students)
+
 }
 
 //查询所有形如：c.Find(nil).Many(&results)
@@ -108,9 +115,11 @@ func GetDataViaId() {
 	stu := &Student{}
 	err := c.FindId(id).One(stu)
 	if err != nil {
-		log.Fatal(err)
+
+		logging.Fatal(err)
 	}
-	fmt.Println(stu)
+	logging.Info(stu)
+
 }
 
 //更新通过函数
@@ -122,7 +131,8 @@ func UpdateDBViaId() {
 	c := ConnecToDB("student2")
 	err := c.Update(bson.M{"email": "12832984@qq.com"}, bson.M{"$set": bson.M{"name": "haha", "phone": "37848"}})
 	if err != nil {
-		log.Fatal(err)
+
+		logging.Fatal(err)
 	}
 }
 
@@ -135,6 +145,7 @@ func RemoveFromMgo() {
 	c := ConnecToDB("student2")
 	_, err := c.RemoveAll(bson.M{"phone": "13480989765"})
 	if err != nil {
-		log.Fatal(err)
+
+		logging.Fatal(err)
 	}
 }
