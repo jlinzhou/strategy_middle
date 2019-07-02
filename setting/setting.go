@@ -29,7 +29,7 @@ var (
 	Mongodb_PASSWORD string
 	Mongodb_HOST     string
 	Mongodb_DATABASE string
-
+	Mongodb_CHECK_DATABASE  string
 	//rabbitmq账户密码
 	Rabbitmq_USER string
 	Rabbitmq_PASSWORD string
@@ -90,6 +90,7 @@ func LoadDatabase() {
 	Mongodb_USER = sec.Key("USER").MustString("")
 	Mongodb_PASSWORD = sec.Key("PASSWORD").MustString("")
 	Mongodb_HOST = sec.Key("HOST").MustString("")
+	Mongodb_CHECK_DATABASE = sec.Key("CHECK_DATABASE").MustString("")
 	Mongodb_DATABASE = sec.Key("DATABASE").MustString("")
 
 }

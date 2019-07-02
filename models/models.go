@@ -22,10 +22,13 @@ type Auth struct {
 }
 
 type Strategy_args struct {
-	Strategy_id   int    `json:strategy_id`
-	Strategy_name string `json:strategy_name`
-	Action        string `json:action`
-	Account       string `json:account`
+	// Strategy_id   int    `json:strategy_id`
+	// Strategy_name string `json:strategy_name`
+	// Action        string `json:action`
+	// Account       string `json:account`
+	Contract string `bson:"contract"`
+	Price float64 `bson:"price"`
+	Volume int `baon:volume`
 }
 type Strategy struct {
 	Id   int            `json:id`
@@ -66,8 +69,12 @@ type Onorder struct {
 	Userorderlocalid string
 }
 type Strategy_info struct {
-	Strategy_name   string    `json:"strategy_name"`
-	Create_time     time.Time `json:"create_time"`
-	Update_time     time.Time `json:"update_time"`
-	Strategy_status string    `json:"strategy_status"`
+	ID int `bson:"id"`
+	Instance_name string `bson:"instance_name"`
+	Strategy_name   string    `bson:"strategy_name"`
+	Strategy_args *Strategy_args `bson:"strategy_args"`
+	Account string `bson:"account"`
+	Create_time     time.Time `bson:"create_time"`
+	Update_time     time.Time `bson:"update_time"`
+	Strategy_status string    `bson:"strategy_status"`
 }

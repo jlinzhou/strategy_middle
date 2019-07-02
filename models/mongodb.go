@@ -1,35 +1,36 @@
 package models
 
 import (
-	"encoding/json"
+	//"encoding/json"
 	//"fmt"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	"log"
+	//"log"
 	"strategy_middle/setting"
 	"strategy_middle/logging"
+
 	"time"
 )
 
-func Setdata() {
-	auth := &Auth{Id: 1, Op: "auth", Args: &Auth_args{User: "myid", Pwd: "123456"}}
+// func Setdata() {
+// 	auth := &Auth{Id: 1, Op: "auth", Args: &Auth_args{User: "myid", Pwd: "123456"}}
 
-	strategy := &Strategy{Id: 1, Op: "strategy", Args: &Strategy_args{Strategy_id: 1, Strategy_name: "stop", Action: "m_stop", Account: "test"}}
+// 	strategy := &Strategy{Id: 1, Op: "strategy", Args: &Strategy_args{Strategy_id: 1, Strategy_name: "stop", Action: "m_stop", Account: "test"}}
 
-	jsonauth, _ := json.Marshal(auth)
-	jsonstrategy, _ := json.Marshal(strategy)
+// 	jsonauth, _ := json.Marshal(auth)
+// 	jsonstrategy, _ := json.Marshal(strategy)
 
 
-	logging.Info((string(jsonauth))
-	logging.Info(string(jsonstrategy))
+// 	logging.Info(string(jsonauth))
+// 	logging.Info(string(jsonstrategy))
 
-	c := ConnecToDB("student2")
-	err := c.Insert(auth, strategy)
-	if err != nil {
-		logging.Error(err)
-	}
+// 	c := ConnecToDB("student2")
+// 	err := c.Insert(auth, strategy)
+// 	if err != nil {
+// 		logging.Error(err)
+// 	}
 
-}
+// }
 
 //数据库连接主要用到了mgo中的Dial()函数,连接形式如mgo.Dial(url1,url2,url3)
 func ConnecToDB(table string) *mgo.Collection {
@@ -37,18 +38,19 @@ func ConnecToDB(table string) *mgo.Collection {
 	dialInfo := &mgo.DialInfo{
 		Addrs:     []string{setting.Mongodb_HOST}, //数据库地址 dbhost: mongodb://user@123456:127.0.0.1:27017
 		Timeout:   60 * time.Second,       // 连接超时时间 timeout: 60 * time.Second
-		Source:    setting.Mongodb_DATABASE,       // 设置权限的数据库 authdb: admin
+		Source:    setting.Mongodb_CHECK_DATABASE,       // 设置权限的数据库 authdb: admin
 		Username:  setting.Mongodb_USER,           // 设置的用户名 authuser: user
 		Password:  setting.Mongodb_PASSWORD,       // 设置的密码 authpass: 123456
 		PoolLimit: 1024,                   // 连接池的数量 poollimit: 100
 	}
 
+	//logging.Info(setting.Mongodb_HOST,setting.Mongodb_CHECK_DATABASE,setting.Mongodb_DATABASE,setting.Mongodb_USER,setting.Mongodb_PASSWORD)
 	session, err := mgo.DialWithInfo(dialInfo)
 
 	//session, err := mgo.Dial("192.168.18.16:27017")
 	if err != nil {
-		panic(err)
-		logging.Error(err)
+		//panic(err)
+		logging.Error("mongodb:",err)
 	}
 	//defer session.Close()
 	//session设置的模式分别为:
@@ -90,17 +92,16 @@ func InsertToMogo() {
 
 //查询单个主要用到了func (c *Collection) Find(query interface{}) *Query函数，查询单个和多个主要用到了One()和Many()函数，条件组合可以查看mongDB数据库使用
 func GetDataViaSex() {
-	c := ConnecToDB("student2")
+	c := ConnecToDB("strategy_info")
 	// result := Student{}
 	// err := c.Find(bson.M{"sex": "M"}).One(&result)
 	// if err != nil {
 	// 	log.Fatal(err)
 	// }
 	// fmt.Println("student", result)
-	students := make([]Student, 20)
+	students := make([]Strategy_info, 20)
 	err := c.Find(nil).All(&students)
 	if err != nil {
-
 		logging.Fatal(err)
 	}
 	logging.Info(students)
@@ -119,7 +120,6 @@ func GetDataViaId() {
 		logging.Fatal(err)
 	}
 	logging.Info(stu)
-
 }
 
 //更新通过函数

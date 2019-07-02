@@ -82,18 +82,18 @@ func InitRouter() *gin.Engine {
 		c.HTML(200, "index.html", nil)
 	})
 
-	// //路由设置
-	// apiv1 := r.Group("/api/v1")
-	// {
-	// 	//获取标签列表
-	// 	apiv1.GET("/tags", v1.GetTags)
-	// 	//新建标签
-	// 	apiv1.POST("/tags", v1.AddTag)
-	// 	//更新指定标签
-	// 	apiv1.PUT("/tags/:id", v1.EditTag)
-	// 	//删除指定标签
-	// 	apiv1.DELETE("/tags/:id", v1.DeleteTag)
-	// }
+	//路由设置
+	apiv1 := r.Group("/instance")
+	{
+		//获取所有
+		apiv1.GET("/", api.GetALLInst)
+		// //新建
+		apiv1.GET("/aa", api.AddInst)
+		// //更新
+		// apiv1.PUT("/instance/:id", v1.EditInst)
+		// //删除
+		// apiv1.DELETE("/instance/:id", v1.DeleteInst)
+	}
 
 	return r
 }
